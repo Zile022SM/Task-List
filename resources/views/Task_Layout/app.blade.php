@@ -7,6 +7,7 @@
     @vite('resources/css/app.css')
 </head>
 <body>
+    <h1 class="text-3xl text-orange-500 font-bold pb-5 mt-5  text-center">@yield('title')</h1>
     @yield('content')
 </body>
 </html>

@@ -1,7 +1,10 @@
 <?php
 
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Route;
+use App\Models\Task;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,72 +18,23 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-
-class Task
-{
-  public function __construct(
-    public int $id,
-    public string $title,
-    public string $description,
-    public ?string $long_description,
-    public bool $completed,
-    public string $created_at,
-    public string $updated_at
-  ) {
-  }
-}
-
-$tasks = [
-  new Task(
-    1,
-    'Buy groceries',
-    'Task 1 description',
-    'Task 1 long description',
-    false,
-    '2023-03-01 12:00:00',
-    '2023-03-01 12:00:00'
-  ),
-  new Task(
-    2,
-    'Sell old stuff',
-    'Task 2 description',
-    null,
-    false,
-    '2023-03-02 12:00:00',
-    '2023-03-02 12:00:00'
-  ),
-  new Task(
-    3,
-    'Learn programming',
-    'Task 3 description',
-    'Task 3 long description',
-    true,
-    '2023-03-03 12:00:00',
-    '2023-03-03 12:00:00'
-  ),
-  new Task(
-    4,
-    'Take dogs for a walk',
-    'Task 4 description',
-    null,
-    false,
-    '2023-03-04 12:00:00',
-    '2023-03-04 12:00:00'
-  ),
-];
-
 Route::get('/', function () {
     return redirect()->route('tasks');
 });
 
-Route::get('/tasks', function () use($tasks) {
+Route::get('/tasks', function (){
+    $tasks = Task::latest()->where('completed', true)->orderBy('id','desc')->get();
     return view('tasks-list',['tasks' => $tasks]);
 })->name('tasks');
 
-Route::get('/single-task/{id}', function ($id) use($tasks) {
-    $task = collect($tasks)->firstWhere('id', $id);
-    //dd($tasks);
+Route::view('/tasks/create', 'create-task')->name('create-task');
 
+Route::get('/single-task/{id}', function($id){
+
+    $task = Task::findOrFail($id);
+
+    //dd($task);
+    
     if(!$task) {
         abort(404, 'Task not found');
     }
@@ -88,4 +42,38 @@ Route::get('/single-task/{id}', function ($id) use($tasks) {
     return view('single-task', ['task' => $task]);
 })->name('single-task');
 
+Route::post('/tasks', function (Request $request) {
+    //dd($request->all());
 
+    /*  
+        ONE OPTION
+
+        $data = $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required',
+            'long_description' => 'required',
+        ]);
+
+        $task = new Task();
+        $task->title = $data['title'];
+        $task->description = $data['description'];
+        $task->long_description = $data['long_description'];
+        $task->save();
+
+        return redirect()->route('tasks',['id'=> $task->id])->with('message', 'Task created successfully');
+    */
+
+    /*  ANOTHER OPTION */
+
+    $request->validate([
+        'title' => 'required|max:255',
+        'description' => 'required',
+        'long_description' => 'required',
+        'completed' => 'required',
+    ]);
+
+    Task::create($request->all());
+    
+    return redirect()->route('tasks',['id'=> $request->id])->with('message', 'Task created successfully');
+
+})->name('tasks.store');
