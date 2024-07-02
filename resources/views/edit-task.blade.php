@@ -13,7 +13,7 @@
 
             <div class="flex flex-col w-[50%]">
                 <label for="title" class="text-orange-500 mb-2">Title</label>
-                <input type="text" name="title" value="{{$task->title}}" placeholder="enter task title" class="px-2">
+                <input type="text" name="title" value="{{old('title', $task->title)}}" placeholder="enter task title" class="px-2">
                 @error('title')
                     <div class="text-red-500">{{ $message }}</div>
                 @enderror
@@ -21,7 +21,7 @@
 
             <div class="flex flex-col w-[50%]">
                 <label for="title" class="text-orange-500 mb-2">Completed</label>
-                <input type="number" name="completed" value="{{$task->completed}}" placeholder="enter completed status" class="px-2">
+                <input type="number" name="completed" value="{{old('completed', $task->completed)}}" placeholder="enter completed status" class="px-2">
                 @error('completed')
                     <div class="text-red-500">{{ $message }}</div>
                 @enderror
@@ -33,7 +33,7 @@
 
             <div class="flex flex-col w-[50%]">
                 <label for="title" class="text-orange-500 mb-2">Text</label>
-                <textarea name="description" id="">{{$task->description}}</textarea>
+                <textarea name="description" id="">{{old('description', $task->description)}}</textarea>
                 @error('description')
                     <div class="text-red-500">{{ $message }}</div>
                 @enderror
@@ -41,7 +41,7 @@
 
             <div class="flex flex-col w-[50%]">
                 <label for="title" class="text-orange-500 mb-2">Long text</label>
-                <textarea name="long_description" id="">{{$task->long_description}}</textarea>
+                <textarea name="long_description" id="">{{old('long_description', $task->long_description)}}</textarea>
                 @error('long_description')
                     <div class="text-red-500">{{ $message }}</div>
                 @enderror
