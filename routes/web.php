@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Requests\TaskRequest;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
 
@@ -42,7 +43,7 @@ Route::get('/single-task/{id}', function($id){
     return view('single-task', ['task' => $task]);
 })->name('single-task');
 
-Route::get('edit/task/{task:id}', function(Task $task){
+Route::get('edit/task/{task}', function(Task $task){
 
     //dd($task);
     
@@ -51,7 +52,7 @@ Route::get('edit/task/{task:id}', function(Task $task){
 
 
 
-Route::post('/tasks', function (Request $request) {
+Route::post('/tasks', function (TaskRequest $request) {
     //dd($request->all());
 
     /*  
@@ -74,36 +75,30 @@ Route::post('/tasks', function (Request $request) {
 
     /*  ANOTHER OPTION */
 
-    $request->validate([
-        'title' => 'required|max:255',
-        'description' => 'required',
-        'long_description' => 'required',
-        'completed' => 'required',
-    ]);
-
-    Task::create($request->all());
+    $task = Task::create($request->validated());
     
-    return redirect()->route('tasks',['id'=> $request->id])->with('message', 'Task created successfully');
+    return redirect()->route('tasks',['id'=> $task->id])->with('message', 'Task created successfully');
 
 })->name('tasks.store');
 
 
-Route::put('/update/task/{id}', function (Request $request, $id) {
+Route::put('/update/task/{task}', function (TaskRequest $request, Task $task) {
 
-        $data = $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'long_description' => 'required',
-        ]);
+        //$data = $request->validated();
 
-        $task = Task::findOrFail($id);
-        $task->title = $data['title'];
-        $task->description = $data['description'];
-        $task->long_description = $data['long_description'];
-        $task->save();
+        // $task = Task::findOrFail($id);
+        // $task->title = $data['title'];
+        // $task->description = $data['description'];
+        // $task->long_description = $data['long_description'];
+        // $task->save();
+        $task->update($request->validated());
 
-        return redirect()->route('tasks',['id'=> $task->id])->with('message', 'Task updated successfully');
+        return redirect()->route('tasks')->with('updated_task', $task->id)->with('message', 'Task updated successfully');
     
 
 })->name('task.update');
 
+Route::delete('/delete/task/{task}', function (Task $task) {
+    $task->delete();
+    return redirect()->route('tasks')->with('deleted_task', $task->id)->with('message', 'Task deleted successfully');
+})->name('task.delete');
