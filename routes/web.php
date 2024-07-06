@@ -24,7 +24,7 @@ Route::get('/', function () {
 });
 
 Route::get('/tasks', function (){
-    $tasks = Task::latest()->where('completed', true)->orderBy('id','desc')->get();
+    $tasks = Task::latest()->paginate();
     return view('tasks-list',['tasks' => $tasks]);
 })->name('tasks');
 
