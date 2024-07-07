@@ -12,22 +12,14 @@
 
         <div class="flex w-[100%] gap-6 mb-10 items-center">
 
-            <div class="flex flex-col w-[50%]">
+            <div class="flex flex-col w-full {{isset($task) ? 'md:1/2' : ''}}">
                 <label for="title" class="text-orange-500 mb-2">Title</label>
                 <input type="text" name="title" value="{{$task->title ?? old('title')}}" placeholder="enter task title" class="px-2">
                 @error('title')
                     <div class="text-red-500">{{ $message }}</div>
                 @enderror
             </div>
-
-            <div class="flex flex-col w-[50%]">
-                <label for="title" class="text-orange-500 mb-2">Completed</label>
-                <input type="number" name="completed" value="{{$task->completed ?? old('completed')}}" placeholder="enter completed status" class="px-2">
-                @error('completed')
-                    <div class="text-red-500">{{ $message }}</div>
-                @enderror
-            </div>
-
+            
         </div>
 
         <div class="flex w-[100%] gap-6 items-center">

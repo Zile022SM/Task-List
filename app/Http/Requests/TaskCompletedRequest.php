@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Task;
 
-class TaskRequest extends FormRequest
+class TaskCompletedRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +22,8 @@ class TaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'long_description' => 'required',
+            'completed' => 'required|boolean',
         ];
     }
 }
+  

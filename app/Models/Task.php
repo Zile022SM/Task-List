@@ -13,7 +13,6 @@ class Task extends Model
         'title',
         'description',
         'long_description',
-        'completed',
     ];
     
 }

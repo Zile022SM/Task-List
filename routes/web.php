@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Requests\TaskCompletedRequest;
 use App\Http\Requests\TaskRequest;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
@@ -97,6 +98,17 @@ Route::put('/update/task/{task}', function (TaskRequest $request, Task $task) {
     
 
 })->name('task.update');
+
+Route::put('/completed/task/{task}', function (Task $task) {
+
+    if($task->completed != 1) {
+        $task->completed = 1;
+        $task->save();
+    }
+
+    return redirect()->route('tasks')->with('message', 'Task completed successfully');
+    
+})->name('task.completed');
 
 Route::delete('/delete/task/{task}', function (Task $task) {
     $task->delete();
